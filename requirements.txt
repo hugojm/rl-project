@@ -1,0 +1,4 @@
+tensorflow==1.14.0
+matplotlib
+stable_baselines
+gym==0.14.0
