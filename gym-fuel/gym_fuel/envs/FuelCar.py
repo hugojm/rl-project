@@ -51,7 +51,6 @@ class FuelCarEnv(gym.Env):
          The episode length is higher than 40000
     """
 
-
     def __init__(self):
         self.min_position = 0
         self.max_position = 50000
@@ -65,14 +64,15 @@ class FuelCarEnv(gym.Env):
         self.max_revolutions = 6000
         self.min_consume = 0
         self.max_consume = 30
-        self.gear_r = [2.5, 1.4,0.9,0.7,0.55,0.45]
+        self.gear_r = [2.5, 1.4, 0.9, 0.7, 0.55, 0.45]
         self.alpha = 1.8
         self.beta1 = 100
         self.beta2 = 1.22
 
-
-        self.low = np.array([self.min_position, self.min_speed, self.min_gear,self.min_revolutions, self.min_consume, self.min_limit], dtype=np.float32)
-        self.high = np.array([self.max_position, self.max_speed, self.max_gear,self.max_revolutions, self.max_consume, self.max_limit], dtype=np.float32)
+        self.low = np.array([self.min_position, self.min_speed, self.min_gear,
+                             self.min_revolutions, self.min_consume, self.min_limit], dtype=np.float32)
+        self.high = np.array([self.max_position, self.max_speed, self.max_gear,
+                              self.max_revolutions, self.max_consume, self.max_limit], dtype=np.float32)
 
         self.action_space = spaces.Discrete(5)
         self.observation_space = spaces.Box(self.low, self.high, dtype=np.float32)
@@ -84,10 +84,10 @@ class FuelCarEnv(gym.Env):
 
         position, speed, gear, revolutions, consume, limit = self.state
 
-        if action in [0,1,2]:      # action regarding speed
+        if action in [0, 1, 2]:      # action regarding speed
             speed += (action - 1) * (6)
 
-        elif action in [3,4]:      # action regarding gears
+        elif action in [3, 4]:      # action regarding gears
             # we sum -1 or 1 to the gear depending on the action
             gear += 2/1*(action-4)+1
             gear = np.clip(gear, self.min_gear, self.max_gear)
@@ -95,7 +95,6 @@ class FuelCarEnv(gym.Env):
         revolutions = (self.gear_r[int(gear-1)]*4.64*speed*1000)/(1.83*60)
         revolutions = np.clip(revolutions, self.min_revolutions, self.max_revolutions)
         speed = np.clip(speed, self.min_speed, self.max_speed)
-
 
         # conversion from km/h to m/s as the position is in meters
         position += speed*0.2778
@@ -150,13 +149,12 @@ class FuelCarEnv(gym.Env):
         self.state = (position, speed, gear, revolutions, consume, limit)
         return np.array(self.state, dtype=np.float32), reward, done, {}
 
-
     def reset(
         self,
         return_info: bool = False,
         options: Optional[dict] = None,
     ):
-        self.state = np.array([0,0,1,0,0,randrange(50, 150)])
+        self.state = np.array([0, 0, 1, 0, 0, randrange(50, 150)])
         if not return_info:
             return np.array(self.state, dtype=np.float32)
         else:
